@@ -27,8 +27,27 @@ services:
     volumes:
       - ./db/migration:/liquibase/changelog
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+
 volumes:
-  postgresql: {}
+  postgresql: { }
+  prometheus-data: { }
+  grafana-data: { }
 
 networks:
-  backend: {}
+  backend: { }
