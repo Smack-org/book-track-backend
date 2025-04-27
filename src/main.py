@@ -1,10 +1,19 @@
 from fastapi import FastAPI
-from .routers import books, favourites, reading_list
+
+from src.routers import books, favourites, reading_list
 
 app = FastAPI(
     title="Book Tracking API",
     description="Manage favourite books and reading lists",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(favourites.router,

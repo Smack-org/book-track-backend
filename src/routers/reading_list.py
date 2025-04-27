@@ -1,13 +1,13 @@
 from datetime import datetime
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from typing import List
+
+from src.models.schemas import Book
 from src.models.schemas import (
     ReadingListEntry,
     ReadingListEntryCreate,
     ReadingListEntryUpdate,
 )
-from typing import List
-
-from src.models.schemas import Book
 
 router = APIRouter()
 
