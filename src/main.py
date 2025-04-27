@@ -1,11 +1,12 @@
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from src.routers import books, favourites, reading_list
 
 app = FastAPI(
     title="Book Tracking API",
     description="Manage favourite books and reading lists",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 app.add_middleware(
