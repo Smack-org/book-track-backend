@@ -1,7 +1,8 @@
 from datetime import datetime
+from enum import Enum
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-from enum import Enum
+
 
 
 class Person(BaseModel):

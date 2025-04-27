@@ -1,0 +1,53 @@
+name: Book Track Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/build.yml
+      - src/**
+      - Dockerfile
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    name: Lint and Test
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon flake8 pytest pytest-cov
+
+      - name: Run Radon Maintainability Check
+        run: |
+          MI=$(radon mi . --total-average | tail -n1 | awk '{print $NF}')
+          echo "Maintainability index: $MI"
+          threshold=70
+          if (( $(echo "$MI < $threshold" | bc -l) )); then
+            echo "Maintainability index is below $threshold!"
+            exit 1
+          else
+            echo "Maintainability index requirement met."
+          fi
+
+      - name: Run Flake8 Linting
+        run: flake8 .
+
+      - name: Run tests with PyTest
+        run: pytest --cov=src --cov-branch --cov-fail-under=65 tests/

@@ -6,7 +6,7 @@ authors = [
     { name = "Smak" },
     { name = "Smat" },
     { name = "Arturicus" },
-    { name = "ism" },
+    { name = "Ism" },
     { name = "Vlad" }
 ]
 readme = "README.md"
@@ -15,7 +15,8 @@ requires-python = ">=3.10,<3.13"  # <-- FIXED
 dependencies = [
     "fastapi>=0.115.2,<0.116.0",
     "uvicorn>=0.34.2,<0.35.0",
-    "fastapi-code-generator (>=0.5.3,<0.6.0)"
+    "fastapi-code-generator (>=0.5.3,<0.6.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
 ]
 
 [tool.poetry]
