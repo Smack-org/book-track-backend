@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from src.routers import books, favourites, reading_list
 
@@ -26,3 +27,8 @@ app.include_router(reading_list.router,
 app.include_router(books.router,
                    prefix="/books",
                    tags=["books"])
+app.include_router(favourites.router, prefix="/favourites", tags=["favourites"])
+app.include_router(reading_list.router, prefix="/reading-list", tags=["reading-list"])
+app.include_router(books.router, prefix="/books", tags=["books"])
+
+Instrumentator().instrument(app).expose(app)
