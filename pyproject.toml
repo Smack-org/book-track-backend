@@ -3,23 +3,25 @@ name = "book-track-backend"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Smak"},
-    {name = "Smat"},
-    {name = "Arturicus"},
-    {name = "ism"},
-    {name = "Vlad"}
+    { name = "Smak" },
+    { name = "Smat" },
+    { name = "Arturicus" },
+    { name = "ism" },
+    { name = "Vlad" }
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"  # <-- FIXED
+
 dependencies = [
-    "fastapi (>=0.115.12,<0.116.0)",
-    "uvicorn (>=0.34.2,<0.35.0)"
+    "fastapi>=0.115.2,<0.116.0",
+    "uvicorn>=0.34.2,<0.35.0",
+    "fastapi-code-generator (>=0.5.3,<0.6.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "book_track_backend", from = "src"}]
-
+packages = [{ include = "book_track_backend", from = "src" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+

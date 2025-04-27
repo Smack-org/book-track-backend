@@ -37,7 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/FavouriteBook'
   /favourites/{book_id}:
     delete:
       summary: Remove a book from favourites
@@ -109,6 +109,111 @@ paths:
         '204':
           description: Book removed successfully
 
+  /books:
+    get:
+      summary: List and query books
+      description: |
+        Returns a paginated list of books with optional filters for author years,
+        copyright status, IDs, languages, MIME types, search keywords, sorting, and topics.
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination (default 1)
+          schema:
+            type: integer
+            default: 1
+        - name: author_year_start
+          in: query
+          description: Minimum author birth year (positive CE or negative BCE)
+          schema:
+            type: integer
+        - name: author_year_end
+          in: query
+          description: Maximum author death year (positive CE or negative BCE)
+          schema:
+            type: integer
+        - name: copyright
+          in: query
+          description: "Comma-separated values: true, false, or null"
+          schema:
+            type: array
+            items:
+              type: string
+              enum: ["true", "false", "null"]
+            style: form
+            explode: false
+        - name: ids
+          in: query
+          description: Comma-separated Project Gutenberg IDs
+          schema:
+            type: array
+            items:
+              type: integer
+            style: form
+            explode: false
+        - name: languages
+          in: query
+          description: Comma-separated two-character language codes
+          schema:
+            type: array
+            items:
+              type: string
+              pattern: '^[a-z]{2}$'
+            style: form
+            explode: false
+        - name: mime_type
+          in: query
+          description: MIME type prefix (e.g., text/ or text/html)
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Space-separated keywords (case-insensitive)
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Order by ID or popularity (`ascending`, `descending`, `popular`)
+          schema:
+            type: string
+            enum: [ascending, descending, popular]
+        - name: topic
+          in: query
+          description: Keyword search in bookshelves or subjects (case-insensitive)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A paginated list of books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooksList'
+  /books/{id}:
+    get:
+      summary: Retrieve a single book
+      description: Fetch detailed metadata for the book with the given Project Gutenberg ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Project Gutenberg book ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single book object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   parameters:
     paginationOffset:
@@ -133,33 +238,81 @@ components:
       required: true
       schema:
         type: integer
-        example: "560"
+        example: 560
 
   schemas:
-    BookID:
+    BooksList:
       type: object
       properties:
-        id:
+        count:
           type: integer
-          example: "84"
+          description: Total number of books matching the query
+        next:
+          type: string
+          nullable: true
+          description: URL of next page
+        previous:
+          type: string
+          nullable: true
+          description: URL of previous page
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
     Book:
       type: object
       properties:
         id:
           type: integer
-          example: "560"
+          description: Project Gutenberg ID of the book
         title:
           type: string
-          example: "The Hobbit"
-        authors:
+        subjects:
           type: array
           items:
             type: string
-            example: "J.R.R. Tolkien"
-      required:
-        - id
-        - title
-
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        summaries:
+          type: array
+          items:
+            type: string
+        translators:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        bookshelves:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        copyright:
+          type: boolean
+          nullable: true
+        media_type:
+          type: string
+        formats:
+          type: object
+          additionalProperties:
+            type: string
+        download_count:
+          type: integer
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        birth_year:
+          type: integer
+          nullable: true
+        death_year:
+          type: integer
+          nullable: true
     FavouriteBook:
       type: object
       properties:
@@ -169,7 +322,13 @@ components:
           type: string
           format: date-time
           example: "2023-01-01T00:00:00Z"
-
+    BookID:
+      type: object
+      properties:
+        book_id:
+          type: integer
+      required:
+        - book_id
     ReadingStatus:
       type: string
       enum:
@@ -177,7 +336,7 @@ components:
         - reading
         - done
       example: "want_to_read"
-    ReadingStatusQuery: # for filtering in get endpoint
+    ReadingStatusQuery:
       type: string
       enum:
         - want_to_read
@@ -208,7 +367,7 @@ components:
       properties:
         book_id:
           type: integer
-          example: "560"
+          example: 560
         status:
           $ref: '#/components/schemas/ReadingStatus'
           default: want_to_read
@@ -221,4 +380,12 @@ components:
           $ref: '#/components/schemas/ReadingStatus'
       required:
         - status
-
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Book not found"
