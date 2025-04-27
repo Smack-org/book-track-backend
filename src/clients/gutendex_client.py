@@ -1,5 +1,6 @@
-import httpx
 from typing import Optional, Dict, Any, AsyncGenerator
+
+import httpx
 
 
 class GutendexClient:
@@ -7,17 +8,28 @@ class GutendexClient:
     A reusable async client for interacting with the
     Gutendex API (https://gutendex.com).
     """
+
     BASE_URL = "https://gutendex.com"
 
     def __init__(self, client: httpx.AsyncClient | None = None):
         # Ensure the HTTP client follows redirects from Gutendex endpoints
-        self._client = client or httpx.AsyncClient(base_url=self.BASE_URL, follow_redirects=True, )
+        self._client = client or httpx.AsyncClient(
+            base_url=self.BASE_URL,
+            follow_redirects=True,
+        )
 
-    async def list_books(self, page: int = 1, author_year_start: Optional[int] = None,
-                         author_year_end: Optional[int] = None, copyright: Optional[str] = None,
-                         ids: Optional[str] = None,
-                         languages: Optional[str] = None, mime_type: Optional[str] = None, search: Optional[str] = None,
-                         topic: Optional[str] = None, ) -> Dict[str, Any]:
+    async def list_books(
+        self,
+        page: int = 1,
+        author_year_start: Optional[int] = None,
+        author_year_end: Optional[int] = None,
+        copyright: Optional[str] = None,
+        ids: Optional[str] = None,
+        languages: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        search: Optional[str] = None,
+        topic: Optional[str] = None,
+    ) -> Dict[str, Any]:
         """
         Fetches a paginated list of books from Gutendex with optional filters.
         Returns the parsed JSON payload as a dict matching our
@@ -54,7 +66,11 @@ class GutendexClient:
         # Include trailing slash to avoid redirect
         response = await self._client.get(f"/books/{book_id}/")
         if response.status_code == 404:
-            raise httpx.HTTPStatusError(message="Book not found", request=response.request, response=response, )
+            raise httpx.HTTPStatusError(
+                message="Book not found",
+                request=response.request,
+                response=response,
+            )
         response.raise_for_status()
         return response.json()
 
@@ -64,5 +80,8 @@ async def get_gutendex_client() -> AsyncGenerator[GutendexClient, None]:
     FastAPI dependency provider that yields a GutendexClient with
     a managed HTTPX AsyncClient.
     """
-    async with httpx.AsyncClient(base_url=GutendexClient.BASE_URL, follow_redirects=True, ) as async_client:
+    async with httpx.AsyncClient(
+        base_url=GutendexClient.BASE_URL,
+        follow_redirects=True,
+    ) as async_client:
         yield GutendexClient(async_client)
