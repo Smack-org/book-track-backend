@@ -36,15 +36,26 @@ jobs:
 
       - name: Run Radon Maintainability Check
         run: |
-          MI=$(radon mi . --total-average | tail -n1 | awk '{print $NF}')
-          echo "Maintainability index: $MI"
-          threshold=70
-          if (( $(echo "$MI < $threshold" | bc -l) )); then
-            echo "Maintainability index is below $threshold!"
+          output=$(radon mi --show .)
+          echo "$output"
+          error_found=0
+          while IFS= read -r line; do
+            metric=$(echo "$line" | grep -oP '\(\K[0-9.]+(?=\))')
+            if [ ! -z "$metric" ]; then
+              if (( $(echo "$metric < 70" | bc -l) )); then
+                echo "Fail: '$line' has a maintainability metric below 70."
+                error_found=1
+              fi
+            fi
+          done <<< "$output"
+          
+          if [ $error_found -ne 0 ]; then
+            echo "One or more files have a maintainability metric below 70. Failing the build."
             exit 1
           else
-            echo "Maintainability index requirement met."
+            echo "All files have acceptable maintainability metrics."
           fi
+        shell: bash
 
       - name: Run Flake8 Linting
         run: flake8 .
