@@ -1,4 +1,5 @@
 from typing import Optional, Dict, Any, AsyncGenerator
+import httpx
 
 
 class GutendexClient:
