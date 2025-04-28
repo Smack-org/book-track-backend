@@ -1,9 +1,11 @@
 import httpx
 from typing import Optional, Dict, Any, AsyncGenerator
 
+
 class GutendexClient:
     """
-    A reusable async client for interacting with the Gutendex API (https://gutendex.com).
+    A reusable async client for interacting with the
+    Gutendex API (https://gutendex.com).
     """
     BASE_URL = "https://gutendex.com"
 
@@ -28,7 +30,8 @@ class GutendexClient:
     ) -> Dict[str, Any]:
         """
         Fetches a paginated list of books from Gutendex with optional filters.
-        Returns the parsed JSON payload as a dict matching our Pydantic schemas.
+        Returns the parsed JSON payload as a dict matching our
+        Pydantic schemas.
         """
         params: Dict[str, Any] = {"page": page}
         if author_year_start is not None:
@@ -69,9 +72,11 @@ class GutendexClient:
         response.raise_for_status()
         return response.json()
 
+
 async def get_gutendex_client() -> AsyncGenerator[GutendexClient, None]:
     """
-    FastAPI dependency provider that yields a GutendexClient with a managed HTTPX AsyncClient.
+    FastAPI dependency provider that yields a GutendexClient with
+    a managed HTTPX AsyncClient.
     """
     async with httpx.AsyncClient(
         base_url=GutendexClient.BASE_URL,

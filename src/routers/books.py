@@ -6,6 +6,7 @@ from typing import Optional
 
 router = APIRouter()
 
+
 @router.get("/", response_model=BooksList)
 async def list_books(
     page: int = 1,
@@ -31,6 +32,7 @@ async def list_books(
         topic=topic,
     )
     return BooksList(**data)
+
 
 @router.get("/{id}", response_model=Book, responses={404: {"model": Error}})
 async def get_book(
