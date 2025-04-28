@@ -44,6 +44,11 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
 
+  api:
+    build: .
+    ports:
+      - "8080:8000"
+
 volumes:
   postgresql: { }
   prometheus-data: { }
