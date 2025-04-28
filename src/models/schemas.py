@@ -5,6 +5,7 @@ from typing import List, Optional, Dict
 from pydantic import BaseModel
 
 
+
 class Person(BaseModel):
     name: str
     birth_year: Optional[int] = None
