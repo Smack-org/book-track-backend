@@ -3,9 +3,9 @@
 -- changeset catorleader:003-create-user-table
 CREATE TABLE "user" (
     id uuid PRIMARY KEY,
-    name varchar UNIQUE,
-    hashed_password varchar,
-    username varchar,
+    name varchar(1024) UNIQUE,
+    hashed_password varchar(1024),
+    username varchar(1024),
     created_at timestamp
 );
 
