@@ -1,9 +1,6 @@
 from datetime import datetime
 from typing import List
 
-from fastapi import APIRouter
-
-from src.models.schemas import Book, FavouriteBook, BookID
 
 router = APIRouter()
 
