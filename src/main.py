@@ -30,4 +30,3 @@ app.include_router(books.router,
                    tags=["books"])
 
 Instrumentator().instrument(app).expose(app)
-

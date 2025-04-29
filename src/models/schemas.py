@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Dict
+from fastapi import Query
 
 from pydantic import BaseModel
 
@@ -73,3 +74,15 @@ class BookID(BaseModel):
 class Error(BaseModel):
     code: int
     message: str
+
+
+class ListBooksParams(BaseModel):
+    page: int = Query(default=1)
+    author_year_start: Optional[int] = Query(default=None)
+    author_year_end: Optional[int] = Query(default=None)
+    copyright: Optional[str] = Query(default=None)
+    ids: Optional[str] = Query(default=None)
+    languages: Optional[str] = Query(default=None)
+    mime_type: Optional[str] = Query(default=None)
+    search: Optional[str] = Query(default=None)
+    topic: Optional[str] = Query(default=None)
