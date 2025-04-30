@@ -2,9 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Dict
 from fastapi import Query
-# from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Person(BaseModel):
@@ -87,26 +86,3 @@ class ListBooksParams(BaseModel):
     mime_type: Optional[str] = Query(default=None)
     search: Optional[str] = Query(default=None)
     topic: Optional[str] = Query(default=None)
-
-
-class UserCreate(BaseModel):
-    login: str
-    password: str = Field(..., min_length=8)
-    username: str | None = None
-
-
-class UserInfo(BaseModel):
-    login: str
-    username: str | None = None
-    created_at: datetime
-
-    class Config:
-        orm_mode = True
-        from_attributes = True
-
-    def to_dict(self):
-        return {
-            "login": self.login,
-            "username": self.username,
-            "created_at": self.created_at.isoformat()
-        }
