@@ -20,6 +20,11 @@ fake_reading_list_db = []
 async def get_reading_list(
           user: UserInfo = Depends(get_current_user),
           offset: int = 0, limit: int = 20, status: str = "all"):
+    """
+    Get the reading list of currently authorized user.
+
+    - **returns**: User reading list
+    """
     filtered = [
         entry
         for entry in fake_reading_list_db
@@ -33,8 +38,6 @@ async def add_to_reading_list(
           entry: ReadingListEntryCreate,
           user: UserInfo = Depends(get_current_user)):
     new_entry = ReadingListEntry(
-        book=Book(id=entry.book_id, title="Example Book", media_type="text",
-                  download_count=0),
         book=Book(
             id=entry.book_id, title="Example Book", media_type="text", download_count=0
         ),
