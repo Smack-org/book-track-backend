@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends
 from src.clients.gutendex_client import GutendexClient, get_gutendex_client
 from src.models.schemas import Book, BooksList, Error, ListBooksParams
 from .error_conversions import httpx_error_to_fastapi_error
+from .users import get_current_user, UserInfo
+
 
 router = APIRouter()
 
@@ -12,6 +14,7 @@ router = APIRouter()
 async def list_books(
     params: ListBooksParams = Depends(),
     client: GutendexClient = Depends(get_gutendex_client),
+    user: UserInfo = Depends(get_current_user)
 ):
     try:
         data = await client.list_books(**params.model_dump(exclude_none=True))
@@ -24,6 +27,7 @@ async def list_books(
 async def get_book(
     id: int,
     client: GutendexClient = Depends(get_gutendex_client),
+    user: UserInfo = Depends(get_current_user)
 ):
     try:
         data = await client.get_book(id)

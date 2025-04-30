@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List
+from .users import get_current_user, UserInfo
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from src.models.schemas import Book
 from src.models.schemas import (
@@ -16,7 +17,9 @@ fake_reading_list_db = []
 
 
 @router.get("/", response_model=List[ReadingListEntry])
-async def get_reading_list(offset: int = 0, limit: int = 20, status: str = "all"):
+async def get_reading_list(
+          user: UserInfo = Depends(get_current_user),
+          offset: int = 0, limit: int = 20, status: str = "all"):
     filtered = [
         entry
         for entry in fake_reading_list_db
@@ -26,7 +29,9 @@ async def get_reading_list(offset: int = 0, limit: int = 20, status: str = "all"
 
 
 @router.post("/", response_model=ReadingListEntry, status_code=201)
-async def add_to_reading_list(entry: ReadingListEntryCreate):
+async def add_to_reading_list(
+          entry: ReadingListEntryCreate,
+          user: UserInfo = Depends(get_current_user)):
     new_entry = ReadingListEntry(
         book=Book(id=entry.book_id, title="Example Book", media_type="text",
                   download_count=0),
@@ -42,7 +47,9 @@ async def add_to_reading_list(entry: ReadingListEntryCreate):
 
 
 @router.patch("/{book_id}", response_model=ReadingListEntry)
-async def update_reading_status(book_id: int, update: ReadingListEntryUpdate):
+async def update_reading_status(
+          book_id: int, update: ReadingListEntryUpdate,
+          user: UserInfo = Depends(get_current_user)):
     # Implement update logic
     return ReadingListEntry(
         book=Book(
@@ -55,6 +62,7 @@ async def update_reading_status(book_id: int, update: ReadingListEntryUpdate):
 
 
 @router.delete("/{book_id}", status_code=204)
-async def remove_from_reading_list(book_id: int):
+async def remove_from_reading_list(book_id: int,
+                                   user: UserInfo = Depends(get_current_user)):
     # Implement deletion logic
     return
