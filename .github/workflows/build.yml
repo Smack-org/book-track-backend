@@ -82,10 +82,10 @@ jobs:
           coverage=$(tail -1 /tmp/booktrack/report.txt 2>/dev/null | awk '{print $NF}' | tr -d '%')
           echo "Total coverage: ${coverage:-Unavailable}%"
 
-          echo "If smaller than 60% - too bad."
-          if [ -n "$coverage" ] && [ "$(echo "$coverage < 60" | bc)" -eq 1 ]; then
+          echo "If smaller than 65% - too bad."
+          if [ -n "$coverage" ] && [ "$(echo "$coverage < 65" | bc)" -eq 1 ]; then
             echo "Coverage $coverage% is too low!"
             exit 1
           fi
 
-          echo "Wow! Coverage is higher than 60%, congrats !"
+          echo "Wow! Coverage is higher than 65%, congrats !"
