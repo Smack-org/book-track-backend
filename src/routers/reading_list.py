@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import List
+from datetime import datetime from typing import List
 from .users import get_current_user, UserInfo
 
 from src.database import get_async_session
@@ -70,7 +69,11 @@ async def add_to_reading_list(
           user: UserInfo = Depends(get_current_user),
           session: AsyncSession = Depends(get_async_session),
           gut_client: GutendexClient = Depends(get_gutendex_client)):
+    """
+    Add a book to the reading list of authorized user
 
+    - **returns**: Model of entry added to reading list
+    """
     try:
         data = await gut_client.get_book(entry.book_id)
     except Exception:
@@ -92,27 +95,11 @@ async def update_reading_status(
           user: UserInfo = Depends(get_current_user),
           session: AsyncSession = Depends(get_async_session),
           gut_client: GutendexClient = Depends(get_gutendex_client)):
-    
-    try:
-        data = await gut_client.get_book(book_id)
-    except Exception:
-        raise HTTPException(status_code=404, detail=f"Book {book_id} not found in Gutendex")
-        
-    updated_at = datetime.now()
-    created_at = await session.execute(text(
-        """UPDATE reading_list SET status = :status, updated_at = :updated_at
-        WHERE book_id = :book_id AND user_id = :user_id RETURNING created_at"""),
-        {"book_id": book_id, "user_id": str(user.id), "status": update.status.value,
-         "updated_at": updated_at}
-    )
-    await session.commit()
+    """
+    Update authorized user's reading list entry
 
-    return ReadingListEntry(status=update.status, book=Book(**data), updated_at=updated_at, created_at=created_at)
-
-@router.delete("/{book_id}", status_code=204)
-async def remove_from_reading_list(book_id: int,
-                                   user: UserInfo = Depends(get_current_user),
-                                   session: AsyncSession = Depends(get_async_session)):
+    - **returns**: 204 on successfull delete of reading list entry 
+    """
     await session.execute(
         text("DELETE FROM reading_list WHERE user_id = :user_id AND book_id = :book_id"),
         {"user_id": str(user.id), "book_id": book_id}
