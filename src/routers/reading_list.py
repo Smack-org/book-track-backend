@@ -152,6 +152,7 @@ async def update_reading_status(
             "updated_at": updated_at,
         },
     )
+    created_at = created_at.scalar_one()
     await session.commit()
 
     return ReadingListEntry(
