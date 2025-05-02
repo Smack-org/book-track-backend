@@ -17,4 +17,5 @@ ENV PYTHONPATH="/app/src"
 
 COPY . .
 
-CMD ["poetry", "run", "coverage", "run", "--branch", "--source=src", "--data-file=coverage/.coverage","-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+RUN chmod +x coverage-entrypoint.sh
+CMD ["./coverage-entrypoint.sh"]

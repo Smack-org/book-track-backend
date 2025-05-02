@@ -22,5 +22,8 @@ class API:
         headers = {"Authorization": f"Bearer {token}"}
         return self.client.get("/users/me", headers=headers)
 
+    def stop(self):
+        return self.client.get("/e2e/die")
+
     def close(self):
         self.client.close()
