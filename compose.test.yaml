@@ -59,4 +59,5 @@ volumes:
   postgresql: { }
 
 networks:
-  backend: { }
+  backend:
+      driver: bridge
