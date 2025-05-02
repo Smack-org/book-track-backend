@@ -14,10 +14,6 @@ services:
     image: liquibase/liquibase:4.25
     depends_on:
       - postgresql
-    environment:
-      POSTGRES_DB: book-api
-      POSTGRES_PASSWORD: smack
-      POSTGRES_USER: smack
     command:
       - --changelog-file=db.master-changelog.xml
       - --driver=org.postgresql.Driver
