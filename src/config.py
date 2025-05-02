@@ -10,11 +10,13 @@ APP_META = dict(
     },
 )
 
-DATABASE_URL = ("postgresql+asyncpg://"
-                "{POSTGRES_USER}:{POSTGRES_PASSWORD}@"
-                "postgresql:5432/{POSTGRES_DB}").format(**environ)
+DATABASE_URL = (
+    "postgresql+asyncpg://"
+    "{POSTGRES_USER}:{POSTGRES_PASSWORD}@"
+    "postgresql:5432/{POSTGRES_DB}"
+).format(**environ)
 
-JWT_TOKEN_URL = 'auth/login'
+JWT_TOKEN_URL = "auth/login"
 JWT_TOKEN_SECRET = environ.get("JWT_TOKEN_SECRET")
 JWT_TOKEN_LIFETIME = 7 * 24 * 3600
 

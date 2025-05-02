@@ -70,7 +70,7 @@ async def authenticate_user(
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    db: AsyncSession = Depends(get_async_session)
+    db: AsyncSession = Depends(get_async_session),
 ) -> UserInfo:
     """
     Extract the currently authenticated user from the token.

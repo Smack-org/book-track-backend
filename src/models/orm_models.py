@@ -14,4 +14,6 @@ class User(Base):
     login = mapped_column(String(1024), unique=True, nullable=False)  # like login
     hashed_password = mapped_column(String(1024))
     username = mapped_column(String(1024))
-    created_at = mapped_column(TIMESTAMP, index=True, nullable=False, server_default=now())
+    created_at = mapped_column(
+        TIMESTAMP, index=True, nullable=False, server_default=now()
+    )

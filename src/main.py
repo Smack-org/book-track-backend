@@ -5,9 +5,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from src.routers import books, favourites, reading_list, users
 from config import APP_META
 
-app = FastAPI(
-    **APP_META
-)
+app = FastAPI(**APP_META)
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,17 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(favourites.router,
-                   prefix="/favourites",
-                   tags=["favourites"])
-app.include_router(reading_list.router,
-                   prefix="/reading-list",
-                   tags=["reading-list"])
-app.include_router(books.router,
-                   prefix="/books",
-                   tags=["books"])
-app.include_router(users.router,
-                   prefix="/users",
-                   tags=["users"])
+app.include_router(favourites.router, prefix="/favourites", tags=["favourites"])
+app.include_router(reading_list.router, prefix="/reading-list", tags=["reading-list"])
+app.include_router(books.router, prefix="/books", tags=["books"])
+app.include_router(users.router, prefix="/users", tags=["users"])
 
 Instrumentator().instrument(app).expose(app)
