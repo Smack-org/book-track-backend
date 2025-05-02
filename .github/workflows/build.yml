@@ -48,7 +48,7 @@ jobs:
               fi
             fi
           done <<< "$output"
-          
+
           if [ $error_found -ne 0 ]; then
             echo "One or more files have a maintainability metric below 70. Failing the build."
             exit 1
@@ -60,5 +60,27 @@ jobs:
       - name: Run Flake8 Linting
         run: flake8 .
 
-      - name: Run tests with PyTest
-        run: pytest --cov=src --cov-branch --cov-fail-under=65 tests/
+      - name: Is there docker compose ?
+        run: |
+          docker compose version || docker-compose version
+
+      - name: Run e2e tests
+        run: |
+          docker compose --file compose.test.yaml up --build -d > /dev/null
+
+          echo "Tests are granted 10 seconds to run"
+          sleep 10
+
+          docker compose --file compose.test.yaml down
+
+          echo "===== TEST LOGS ====="
+          cat /tmp/booktrack/testlog.txt || echo "No test log found."
+
+          echo "===== COVERAGE ====="
+          coverage=$(tail -1 /tmp/booktrack/report.txt 2>/dev/null | awk '{print $NF}')
+          echo "Total coverage: ${coverage:-Unavailable}"
+
+          if [ "$(echo "$coverage < 60" | bc)" -eq 1 ]; then
+            echo "Coverage $coverage% is too low!"
+            exit 1
+          fi

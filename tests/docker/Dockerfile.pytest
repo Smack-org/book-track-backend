@@ -1,0 +1,18 @@
+FROM python:3.12
+
+RUN apt-get update && apt-get install -y curl python3-dev
+
+# Install Poetry, and set up PATH so we can use it !
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+ENV PATH="/root/.local/bin:$PATH"
+
+WORKDIR /app
+
+COPY pyproject.toml poetry.lock* ./
+
+RUN poetry install --no-interaction --no-root
+
+COPY . .
+
+CMD bash -c "poetry run pytest > /logs/testlog.txt 2>&1"
