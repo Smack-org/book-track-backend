@@ -8,11 +8,11 @@ from datetime import datetime
 import uuid
 
 from src.database import get_async_session
-import models.orm_models as models
-from models.user_schemas import UserCreate, UserInfo
+import src.models.orm_models as models
+from src.models.user_schemas import UserCreate, UserInfo
 from src.oauth.password_utils import verify_password, get_password_hash
 from src.config import JWT_TOKEN_SECRET
-from oauth.auth_algorithm import ALGORITHM
+from src.oauth.auth_algorithm import ALGORITHM
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")

@@ -1,11 +1,25 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
+from contextlib import asynccontextmanager
 
 from src.routers import books, favourites, reading_list, users
-from config import APP_META
+from config import APP_META, IS_E2E
+from coverage_setup import start_cov, stop_cov
 
-app = FastAPI(**APP_META)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if IS_E2E:
+        start_cov()
+        yield
+        stop_cov()
+
+
+app = FastAPI(
+    **APP_META,
+    lifespan=lifespan
+)
 
 app.add_middleware(
     CORSMiddleware,

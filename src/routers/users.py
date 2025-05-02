@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
 from src.database import get_async_session
-from models.user_schemas import UserCreate, UserInfo
-from oauth.schemas import Token
+from src.models.user_schemas import UserCreate, UserInfo
+from src.oauth.schemas import Token
 from src.oauth.jwt_utils import create_access_token_from_user
 from src.cruds.users_crud import (
     get_user_by_login,
