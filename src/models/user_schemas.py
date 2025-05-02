@@ -13,3 +13,4 @@ class UserCreate(UserBase):
 
 class UserInfo(UserBase):
     created_at: datetime
+    id: str

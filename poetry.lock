@@ -297,6 +297,31 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [[package]]
+name = "databases"
+version = "0.9.0"
+description = "Async database support for Python."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "databases-0.9.0-py3-none-any.whl", hash = "sha256:9ee657c9863b34f8d3a06c06eafbe1bda68af2a434b56996312edf1f1c0b6297"},
+    {file = "databases-0.9.0.tar.gz", hash = "sha256:d2f259677609bf187737644c95fa41701072e995dfeb8d2882f335795c5b61b0"},
+]
+
+[package.dependencies]
+sqlalchemy = ">=2.0.7"
+
+[package.extras]
+aiomysql = ["aiomysql"]
+aiopg = ["aiopg"]
+aiosqlite = ["aiosqlite"]
+asyncmy = ["asyncmy"]
+asyncpg = ["asyncpg"]
+mysql = ["aiomysql"]
+postgresql = ["asyncpg"]
+sqlite = ["aiosqlite"]
+
+[[package]]
 name = "datamodel-code-generator"
 version = "0.28.5"
 description = "Datamodel Code Generator"
@@ -1553,4 +1578,4 @@ standard = ["colorama (>=0.4) ; sys_platform == \"win32\"", "httptools (>=0.6.3)
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "c1a4ece68dcdc053ca19e4f9bd3243e4b64bded1176cda1a076683260c623876"
+content-hash = "ab271a9e6fed2d02fdcdaa5ce88ebc9a465d05f117846e8e5e5ec460c18f1bba"

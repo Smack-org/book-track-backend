@@ -40,6 +40,7 @@ class ReadingStatus(str, Enum):
     WANT_TO_READ = "want_to_read"
     READING = "reading"
     DONE = "done"
+    ALL = "all"
 
 
 class ReadingListEntryBase(BaseModel):
