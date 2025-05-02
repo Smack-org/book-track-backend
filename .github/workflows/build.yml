@@ -78,7 +78,7 @@ jobs:
           cat /tmp/booktrack/testlog.txt || echo "No test log found."
 
           echo "===== COVERAGE ====="
-          coverage=$(tail -1 /tmp/booktrack/report.txt 2>/dev/null | awk '{print $NF}')
+          coverage=$(tail -1 /tmp/booktrack/report.txt 2>/dev/null | awk '{print $NF}' | tr -d '%')
           echo "Total coverage: ${coverage:-Unavailable}"
 
           echo "If smaller than 60% - too bad."
