@@ -14,7 +14,7 @@ router = APIRouter()
 async def list_books(
     params: ListBooksParams = Depends(),
     client: GutendexClient = Depends(get_gutendex_client),
-    user: UserInfo = Depends(get_current_user)
+    user: UserInfo = Depends(get_current_user),
 ):
     try:
         data = await client.list_books(**params.model_dump(exclude_none=True))
@@ -27,7 +27,7 @@ async def list_books(
 async def get_book(
     id: int,
     client: GutendexClient = Depends(get_gutendex_client),
-    user: UserInfo = Depends(get_current_user)
+    user: UserInfo = Depends(get_current_user),
 ):
     try:
         data = await client.get_book(id)

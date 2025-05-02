@@ -36,6 +36,4 @@ def create_access_token(
 
 
 def create_access_token_from_user(user: UserBase) -> str:
-    return create_access_token({
-        "login": user.login
-    })
+    return create_access_token({"login": user.login})
