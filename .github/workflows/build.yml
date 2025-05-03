@@ -37,7 +37,7 @@ jobs:
 
       - name: Run Radon Maintainability Check
         run: |
-          output=$(poetry run radon mi -s . -e tests/conftest.py)
+          output=$(radon mi -s . -e tests/conftest.py)
           echo "$output"
           error_found=0
           while IFS= read -r line; do
