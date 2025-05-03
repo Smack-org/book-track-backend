@@ -1,23 +1,25 @@
 from .conftest import API
 
 
-def test_user_registration_flow():
-    api = API()
+def test_user_registration_flow(api: API):
+    username = "e2etestuser"
+    password = "strongpassword123"
+    display_name = "E2E Tester"
 
     # Step 1: Register
-    response = api.register_user("e2etestuser", "strongpassword123", "E2E Tester")
+    response = api.register_user(username, password, display_name)
     assert response.status_code == 200, f"Register failed: {response.text}"
     token = response.json().get("access_token")
     assert token, "No token received on registration"
 
     # Step 2: Login
-    response = api.login("e2etestuser", "strongpassword123")
+    response = api.login(username, password)
     assert response.status_code == 200, f"Login failed: {response.text}"
     token = response.json().get("access_token")
     assert token, "No token received on login"
 
     # Step 3: Get profile
-    response = api.get_profile(token)
+    response = api.get_profile()
     assert response.status_code == 200, f"/me failed: {response.text}"
     profile = response.json()
     assert profile["login"] == "e2etestuser"
@@ -35,7 +37,3 @@ def test_user_registration_flow():
     # Step 6: try to register a user with small password
     response = api.register_user("e2etestuser", "123", "Some name, hz")
     assert response.status_code != 200, "User managed to register with bad pass. How come so bad?"
-
-    api.stop()
-
-    api.close()
