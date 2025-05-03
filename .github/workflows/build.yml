@@ -70,7 +70,7 @@ jobs:
           docker compose --file compose.test.yaml up --build -d &> /dev/null
 
           echo "Tests are granted 10 seconds to run"
-          sleep 10
+          sleep 15
 
           echo "Time is up! Stopping the containers..."
           docker compose --file compose.test.yaml down &> /dev/null
