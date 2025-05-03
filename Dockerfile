@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12.2
 
 RUN apt-get update && apt-get install -y curl python3-dev
 
@@ -9,7 +9,7 @@ ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock* ./
+COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-interaction --no-root
 
