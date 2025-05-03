@@ -1,9 +1,7 @@
 FROM python:3.12
 
-RUN apt-get update && apt-get install -y curl python3-dev
-
-# Install Poetry, and set up PATH so we can use it !
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN apt-get update && apt-get install -y curl python3-dev \
+  && curl -sSL https://install.python-poetry.org | python3 -
 
 ENV PATH="/root/.local/bin:$PATH"
 
