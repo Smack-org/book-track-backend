@@ -26,6 +26,7 @@ dependencies = [
     "databases (>=0.9.0,<0.10.0)",
     "coverage (>=7.8.0,<8.0.0)",
     "gevent (>=25.4.2,<26.0.0)",
+    "h11 (>=0.16.0,<0.17.0)",
 ]
 
 [tool.poetry]
