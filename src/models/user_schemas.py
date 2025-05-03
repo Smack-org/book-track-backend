@@ -60,14 +60,11 @@ class UserInfo(UserBase):
     """
     Schema representing stored user information.
 
-    Includes metadata about creation time and unique identifier.
-
     Attributes:
         created_at (datetime): Timestamp of user creation.
-        id (str): Unique identifier (e.g., UUID) of the user.
     """
 
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=datetime.now,
         description="UTC timestamp when the user was created",
     )
