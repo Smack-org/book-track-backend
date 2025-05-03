@@ -86,4 +86,3 @@ async def remove_favourite(
         {"user_id": str(user.id), "book_id": book_id},
     )
     await session.commit()
-    return
