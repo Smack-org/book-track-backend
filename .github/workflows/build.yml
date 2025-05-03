@@ -69,7 +69,7 @@ jobs:
         run: |
           docker compose --file compose.test.yaml up --build -d &> /dev/null
 
-          echo "Tests are granted 10 seconds to run"
+          echo "Tests are granted 15 seconds to run"
           sleep 15
 
           echo "Time is up! Stopping the containers..."
@@ -77,6 +77,11 @@ jobs:
 
           echo "===== TEST LOGS ====="
           cat /tmp/booktrack/testlog.txt || echo "No test log found."
+
+          if grep -q "FAILED" /tmp/booktrack/testlog.txt; then
+            echo "Some of the tests have failed! Heads up!"
+            exit 1
+          fi
 
           echo "===== COVERAGE ====="
           coverage=$(tail -1 /tmp/booktrack/report.txt 2>/dev/null | awk '{print $NF}' | tr -d '%')
