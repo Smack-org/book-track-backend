@@ -68,3 +68,13 @@ class UserInfo(UserBase):
         default_factory=datetime.now,
         description="UTC timestamp when the user was created",
     )
+
+
+class UserFromDB(UserInfo):
+    """
+    Schema representing user info that is fetched from the database.
+
+    Attributes:
+        id (uuid4): User primary key.
+    """
+    id: str = Field(..., description="Unique identifier of the user (UUID)")

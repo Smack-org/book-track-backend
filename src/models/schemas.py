@@ -31,6 +31,11 @@ class Book(BookBase):
     pass
 
 
+class BookEnriched(BookBase):
+    is_favourite: bool
+    became_favourite_at: Optional[datetime]
+
+
 class FavouriteBook(BaseModel):
     book: Book
     added_at: datetime
@@ -61,11 +66,11 @@ class ReadingListEntry(ReadingListEntryBase):
     created_at: datetime
 
 
-class BooksList(BaseModel):
+class EnrichedBooksList(BaseModel):
     count: int
     next: Optional[str] = None
     previous: Optional[str] = None
-    results: List[Book]
+    results: List[BookEnriched]
 
 
 class BookID(BaseModel):
