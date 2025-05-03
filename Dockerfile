@@ -1,7 +1,11 @@
 FROM python:3.12
 
-RUN apt-get update && apt-get install -y curl python3-dev \
-  && curl -sSL https://install.python-poetry.org | python3 -
+RUN set -eux; \
+    apt-get update && \
+    apt-get install -y --no-install-recommends curl python3-dev && \
+    curl -fsSL --proto '=https' https://install.python-poetry.org | python3 - && \
+    apt-get purge -y --auto-remove curl && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/root/.local/bin:$PATH"
 
