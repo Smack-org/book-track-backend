@@ -67,7 +67,6 @@ class UserInfo(UserBase):
         id (str): Unique identifier (e.g., UUID) of the user.
     """
 
-    id: str = Field(..., description="Unique identifier of the user (UUID)")
     created_at: datetime = Field(
         default_factory=datetime.utcnow,
         description="UTC timestamp when the user was created",
