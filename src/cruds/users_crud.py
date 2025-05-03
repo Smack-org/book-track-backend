@@ -9,7 +9,7 @@ import uuid
 
 from src.database import get_async_session
 import src.models.orm_models as models
-from src.models.user_schemas import UserCreate, UserInfo
+from src.models.user_schemas import UserCreate, UserFromDB
 from src.oauth.password_utils import verify_password, get_password_hash
 from src.config import JWT_TOKEN_SECRET
 from src.oauth.auth_algorithm import ALGORITHM
@@ -71,7 +71,7 @@ async def authenticate_user(
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_async_session),
-) -> UserInfo:
+) -> UserFromDB:
     """
     Extract the currently authenticated user from the token.
 

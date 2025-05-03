@@ -45,6 +45,9 @@ class API:
             self.token = response.json()["access_token"]
         return response
 
+    def set_token(self, token):
+        self.token = token
+
     def _auth_headers(self):
         """Generate authorization headers using the stored token."""
         return {"Authorization": f"Bearer {self.token}"} if self.token else {}
@@ -160,6 +163,24 @@ class API:
             HTTP response object containing user profile data.
         """
         return self.client.get("/users/me", headers=self._auth_headers())
+
+    def get_book(self, book_id: int):
+        """
+        Retrieve the book from gutindex, with field whether it is favourite or not.
+
+        Returns:
+            HTTP response object containing user profile data.
+        """
+        return self.client.get(f"/books/{book_id}", headers=self._auth_headers())
+
+    def get_books(self, page=1):
+        """
+        Retrieve the book from gutindex, with field whether it is favourite or not.
+
+        Returns:
+            HTTP response object containing user profile data.
+        """
+        return self.client.get("/books/", headers=self._auth_headers(), params={"page": page})
 
     def stop(self):
         """

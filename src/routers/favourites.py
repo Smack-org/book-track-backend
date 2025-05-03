@@ -6,6 +6,7 @@ from sqlalchemy import text
 
 from fastapi import APIRouter, Depends, HTTPException
 from src.models.schemas import Book, FavouriteBook, BookID
+from src.models.user_schemas import UserFromDB
 from .users import get_current_user, UserInfo
 
 from typing import List
@@ -19,7 +20,7 @@ router = APIRouter()
 async def get_favourites(
     offset: int = 0,
     limit: int = 20,
-    user: UserInfo = Depends(get_current_user),
+    user: UserFromDB = Depends(get_current_user),
     gut_client: GutendexClient = Depends(get_gutendex_client),
     db: AsyncSession = Depends(get_async_session),
 ):
