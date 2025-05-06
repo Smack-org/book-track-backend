@@ -24,6 +24,22 @@ async def get_favourites(
     gut_client: GutendexClient = Depends(get_gutendex_client),
     db: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Retrieve a paginated list of the current user's favourite books.
+
+    Args:
+        offset (int): Number of records to skip for pagination. Default is 0.
+        limit (int): Maximum number of records to return. Default is 20.
+        user (UserFromDB): The currently authenticated user.
+        gut_client (GutendexClient): Client to fetch book metadata from Gutendex.
+        db (AsyncSession): Database session dependency.
+
+    Returns:
+        List[FavouriteBook]: A list of the user's favourite books with metadata and timestamps.
+
+    Raises:
+        HTTPException: If a book is not found in Gutendex.
+    """
     result = await db.execute(
         text(
             """SELECT book_id, created_at FROM favourite_books WHERE
@@ -52,6 +68,21 @@ async def add_favourite(
     session: AsyncSession = Depends(get_async_session),
     gut_client: GutendexClient = Depends(get_gutendex_client),
 ):
+    """
+    Add a book to the current user's list of favourites.
+
+    Args:
+        book (BookID): Object containing the ID of the book to add.
+        user (UserInfo): The currently authenticated user.
+        session (AsyncSession): Database session dependency.
+        gut_client (GutendexClient): Client to fetch book metadata from Gutendex.
+
+    Returns:
+        FavouriteBook: The newly added favourite book with metadata and timestamp.
+
+    Raises:
+        HTTPException: If the book is not found in Gutendex.
+    """
     try:
         data = await gut_client.get_book(book.book_id)
     except Exception:
@@ -79,6 +110,20 @@ async def remove_favourite(
     user: UserInfo = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Remove a book from the current user's list of favourites.
+
+    Args:
+        book_id (int): The ID of the book to remove from favourites.
+        user (UserInfo): The currently authenticated user.
+        session (AsyncSession): Database session dependency.
+
+    Returns:
+        None
+
+    Notes:
+        Returns a 204 No Content status on successful deletion.
+    """
     await session.execute(
         text(
             "DELETE FROM favourite_books WHERE user_id = :user_id AND book_id = :book_id"
