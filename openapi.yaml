@@ -1,503 +1,501 @@
 ---
 openapi: 3.1.0
 info:
-  title: Book-Track API
-  description: Track your favourite literature list!
+  title: "Book-Track API"
+  description: "Track your favourite literature list!"
+  version: "0.0.1"
   license:
-    name: Apache 2.0
+    name: "Apache 2.0"
     url: https://opensource.org/license/mit
-  version: 0.0.1
+servers:
+  - url: https://desheviy-smak.ru
+    description: Production server
+
+security:
+  - OAuth2PasswordBearer: []
+
 paths:
-  "/favourites/":
+  /favourites/:
     get:
       tags:
-      - favourites
-      summary: Get Favourites
-      operationId: get_favourites_favourites__get
+        - favourites
+      summary: "Get Favourites"
+      description: |
+        Retrieve the list of favourite books for the authenticated user.
+        Supports pagination through offset and limit parameters.
+      operationId: get_favourites
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: offset
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 0
-          title: Offset
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 20
-          title: Limit
+        - name: offset
+          in: query
+          description: "Pagination offset"
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: "Pagination limit"
+          required: false
+          schema:
+            type: integer
+            default: 20
       responses:
         '200':
-          description: Successful Response
+          description: "A list of favourite books"
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/FavouriteBook"
-                title: Response Get Favourites Favourites  Get
+                  $ref: '#/components/schemas/FavouriteBook'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - favourites
-      summary: Add Favourite
-      operationId: add_favourite_favourites__post
+        - favourites
+      summary: "Add Favourite"
+      description: "Add a book to the authenticated user's list of favourites."
+      operationId: add_favourite
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       requestBody:
+        description: "Book ID to add to favourites"
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/BookID"
+              $ref: '#/components/schemas/BookID'
       responses:
         '201':
-          description: Successful Response
+          description: "Favourite added successfully"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/FavouriteBook"
+                $ref: '#/components/schemas/FavouriteBook'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/favourites/{book_id}":
+                $ref: '#/components/schemas/HTTPValidationError'
+  /favourites/{book_id}:
     delete:
       tags:
-      - favourites
-      summary: Remove Favourite
-      operationId: remove_favourite_favourites__book_id__delete
+        - favourites
+      summary: "Remove Favourite"
+      description: "Remove a book from the authenticated user's favourites."
+      operationId: remove_favourite
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: book_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Book Id
+        - name: book_id
+          in: path
+          description: "ID of the book to remove from favourites"
+          required: true
+          schema:
+            type: integer
       responses:
         '204':
-          description: Successful Response
+          description: "Favourite removed successfully"
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/reading-list/":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /reading-list/:
     get:
       tags:
-      - reading-list
-      summary: Get Reading List
-      description: |-
-        Get the reading list of currently authorized user.
-
-        - **returns**: User reading list
-      operationId: get_reading_list_reading_list__get
+        - reading-list
+      summary: "Get Reading List"
+      description: |
+        Retrieve the current user's reading list entries.
+        You can filter by status and use pagination parameters.
+      operationId: get_reading_list
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: offset
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 0
-          title: Offset
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 20
-          title: Limit
-      - name: status
-        in: query
-        required: false
-        schema:
-          "$ref": "#/components/schemas/ReadingStatus"
-          default: all
+        - name: offset
+          in: query
+          description: "Pagination offset"
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: "Pagination limit"
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          description: "Filter entries by reading status"
+          required: false
+          schema:
+            $ref: '#/components/schemas/ReadingStatus'
+            default: all
       responses:
         '200':
-          description: Successful Response
+          description: "A list of reading list entries"
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/ReadingListEntry"
-                title: Response Get Reading List Reading List  Get
+                  $ref: '#/components/schemas/ReadingListEntry'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - reading-list
-      summary: Add To Reading List
-      description: |-
-        Add a book to the reading list of authorized user
-
-        - **returns**: Model of entry added to reading list
-      operationId: add_to_reading_list_reading_list__post
+        - reading-list
+      summary: "Add To Reading List"
+      description: "Add a book to the authenticated user's reading list."
+      operationId: add_to_reading_list
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       requestBody:
+        description: "Reading list entry data"
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ReadingListEntryCreate"
+              $ref: '#/components/schemas/ReadingListEntryCreate'
       responses:
         '201':
-          description: Successful Response
+          description: "Reading list entry created"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ReadingListEntry"
+                $ref: '#/components/schemas/ReadingListEntry'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/reading-list/{book_id}":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /reading-list/{book_id}:
     patch:
       tags:
-      - reading-list
-      summary: Update Reading Status
-      description: |-
-        Update authorized user's reading list entry
-
-        - **returns**: Model of updated reading list entry
-      operationId: update_reading_status_reading_list__book_id__patch
+        - reading-list
+      summary: "Update Reading Status"
+      description: "Update the reading status for a specific book in the user's reading list."
+      operationId: update_reading_status
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: book_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Book Id
+        - name: book_id
+          in: path
+          description: "ID of the book to update"
+          required: true
+          schema:
+            type: integer
       requestBody:
+        description: "New reading status"
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ReadingListEntryUpdate"
+              $ref: '#/components/schemas/ReadingListEntryUpdate'
       responses:
         '200':
-          description: Successful Response
+          description: "Reading list entry updated"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ReadingListEntry"
+                $ref: '#/components/schemas/ReadingListEntry'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - reading-list
-      summary: Remove From Reading List
-      description: |-
-        Delete authorized user's reading list entry
-
-        - **returns**: 204 on successful delete
-      operationId: remove_from_reading_list_reading_list__book_id__delete
+        - reading-list
+      summary: "Remove From Reading List"
+      description: "Delete a book from the authenticated user's reading list."
+      operationId: remove_from_reading_list
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: book_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Book Id
+        - name: book_id
+          in: path
+          description: "ID of the book to remove"
+          required: true
+          schema:
+            type: integer
       responses:
         '204':
-          description: Successful Response
+          description: "Reading list entry deleted"
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/books/":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /books/:
     get:
       tags:
-      - books
-      summary: List Books
-      description: |-
-        Retrieve a list of books with optional filtering and enrichment for favourites.
-
-        Uses Gutendex API to fetch books and enriches them with favourite status for
-        the authenticated user.
-
-        Args:
-            params (ListBooksParams): Query parameters for filtering/sorting books.
-            client (GutendexClient): Client for interacting with Gutendex API.
-            user (UserInfo): The currently authenticated user.
-            db (AsyncSession): Async SQLAlchemy session.
-
-        Returns:
-            EnrichedBooksList: List of books with additional user-specific metadata.
-      operationId: list_books_books__get
+        - books
+      summary: "List Books"
+      description: |
+        Retrieve a paginated list of books from the Gutendex catalog
+        enriched with the current user's favourite status.
+      operationId: list_books
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 1
-          title: Page
-      - name: author_year_start
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Author Year Start
-      - name: author_year_end
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Author Year End
-      - name: copyright
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Copyright
-      - name: ids
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ids
-      - name: languages
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Languages
-      - name: mime_type
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mime Type
-      - name: search
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Search
-      - name: topic
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Topic
+        - name: page
+          in: query
+          description: "Page number for pagination"
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: author_year_start
+          in: query
+          description: "Filter by author's birth year start"
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+        - name: author_year_end
+          in: query
+          description: "Filter by author's birth year end"
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+        - name: copyright
+          in: query
+          description: "Filter by public domain status"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: ids
+          in: query
+          description: "Filter by comma-separated list of book IDs"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: languages
+          in: query
+          description: "Filter by comma-separated list of language codes"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: mime_type
+          in: query
+          description: "Filter by MIME type of available formats"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: search
+          in: query
+          description: "Search term to filter books by title or author"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: topic
+          in: query
+          description: "Filter by topic or bookshelf"
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
       responses:
         '200':
-          description: Successful Response
+          description: "Paginated list of books with user metadata"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/EnrichedBooksList"
+                $ref: '#/components/schemas/EnrichedBooksList'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/books/{id}":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /books/{id}:
     get:
       tags:
-      - books
-      summary: Get Book
-      description: |-
-        Retrieve a single book by its ID and enrich it with favourite metadata.
-
-        Fetches book metadata from Gutendex API and annotates it with the
-        user's favourite status.
-
-        Args:
-            id (int): The ID of the book to retrieve.
-            client (GutendexClient): Gutendex API client.
-            user (UserInfo): The currently authenticated user.
-            db (AsyncSession): Async SQLAlchemy session.
-
-        Returns:
-            BookEnriched: Book data enriched with favourite status.
-
-        Raises:
-            HTTPException (404): If the book is not found in Gutendex.
-      operationId: get_book_books__id__get
+        - books
+      summary: "Get Book"
+      description: |
+        Retrieve detailed information for a single book by its ID,
+        enriched with the user's favourite metadata.
+      operationId: get_book
       security:
-      - OAuth2PasswordBearer: []
+        - OAuth2PasswordBearer: []
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Id
+        - name: id
+          in: path
+          description: "ID of the book to retrieve"
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
-          description: Successful Response
+          description: "Book details with favourite info"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/BookEnriched"
+                $ref: '#/components/schemas/BookEnriched'
         '404':
+          description: "Book not found"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Error"
-          description: Not Found
+                $ref: '#/components/schemas/Error'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/users/new":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /users/new:
     post:
       tags:
-      - users
-      summary: Register a new user
-      description: |-
-        Create a new user account and return an access token for that user.
-
-        - **user**: User creation data (login, password, optional username)
-        - **returns**: JWT access token and token type
-      operationId: post_new_user_users_new_post
+        - users
+      summary: "Register a new user"
+      description: |
+        Create a new user account and return a JWT access token.
+        Requires unique login and a password of at least 8 characters.
+      operationId: create_user
       requestBody:
+        description: "User signup data"
+        required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/UserCreate"
-        required: true
+              $ref: '#/components/schemas/UserCreate'
       responses:
         '200':
-          description: Successful Response
+          description: "User created successfully"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Token"
+                $ref: '#/components/schemas/Token'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/users/token":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /users/token:
     post:
       tags:
-      - users
-      summary: Log in with credentials
-      description: |-
-        Authenticate a user and return an access token.
-
-        - **form_data**: OAuth2 form with username and password
-        - **returns**: JWT access token and token type
-      operationId: login_for_access_token_users_token_post
+        - users
+      summary: "Log in with credentials"
+      description: |
+        Authenticate user credentials and return a JWT access token.
+        Submit form-data with username and password.
+      operationId: login_user
       requestBody:
+        description: "OAuth2 form data"
+        required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              "$ref": "#/components/schemas/Body_login_for_access_token_users_token_post"
-        required: true
+              $ref: '#/components/schemas/Body_login_for_access_token_users_token_post'
       responses:
         '200':
-          description: Successful Response
+          description: "Authentication successful"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Token"
+                $ref: '#/components/schemas/Token'
         '422':
-          description: Validation Error
+          description: "Validation error"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/users/me":
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /users/me:
     get:
       tags:
-      - users
-      summary: Get current user profile
-      description: |-
-        Get the currently authenticated user's information.
-
-        - **returns**: User details (login, username, created_at, etc.)
-      operationId: get_self_users_me_get
+        - users
+      summary: "Get current user profile"
+      description: "Retrieve the authenticated user's profile information."
+      operationId: get_current_user
+      security:
+        - OAuth2PasswordBearer: []
       responses:
         '200':
-          description: Successful Response
+          description: "User profile data"
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/UserInfo"
-      security:
-      - OAuth2PasswordBearer: []
-  "/metrics":
+                $ref: '#/components/schemas/UserInfo'
+
+  /metrics:
     get:
-      summary: Metrics
-      description: Endpoint that serves Prometheus metrics.
-      operationId: metrics_metrics_get
+      tags:
+        - metrics
+      summary: "Metrics"
+      description: "Expose Prometheus metrics for monitoring."
+      operationId: get_metrics
       responses:
         '200':
-          description: Successful Response
+          description: "Prometheus-formatted metrics"
           content:
             application/json:
-              schema: {}
+              schema: {}  
+
 components:
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: "/users/token"
+          scopes: {}
+
   schemas:
     Body_login_for_access_token_users_token_post:
+      type: object
+      title: Body_login_for_access_token_users_token_post
+      required:
+        - username
+        - password
       properties:
         grant_type:
           anyOf:
-          - type: string
-            pattern: "^password$"
-          - type: 'null'
+            - type: string
+              pattern: "^password$"
+            - type: 'null'
           title: Grant Type
         username:
           type: string
@@ -511,88 +509,23 @@ components:
           default: ''
         client_id:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Client Id
         client_secret:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Client Secret
-      type: object
-      required:
-      - username
-      - password
-      title: Body_login_for_access_token_users_token_post
+
     Book:
-      properties:
-        id:
-          type: integer
-          title: Id
-        title:
-          type: string
-          title: Title
-        subjects:
-          items:
-            type: string
-          type: array
-          title: Subjects
-          default: []
-        authors:
-          items:
-            "$ref": "#/components/schemas/Person"
-          type: array
-          title: Authors
-          default: []
-        summaries:
-          items:
-            type: string
-          type: array
-          title: Summaries
-          default: []
-        translators:
-          items:
-            "$ref": "#/components/schemas/Person"
-          type: array
-          title: Translators
-          default: []
-        bookshelves:
-          items:
-            type: string
-          type: array
-          title: Bookshelves
-          default: []
-        languages:
-          items:
-            type: string
-          type: array
-          title: Languages
-          default: []
-        copyright:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Copyright
-        media_type:
-          type: string
-          title: Media Type
-        formats:
-          additionalProperties:
-            type: string
-          type: object
-          title: Formats
-          default: {}
-        download_count:
-          type: integer
-          title: Download Count
-      type: object
-      required:
-      - id
-      - title
-      - media_type
-      - download_count
       title: Book
-    BookEnriched:
+      type: object
+      required:
+        - id
+        - title
+        - media_type
+        - download_count
       properties:
         id:
           type: integer
@@ -601,111 +534,119 @@ components:
           type: string
           title: Title
         subjects:
-          items:
-            type: string
           type: array
           title: Subjects
+          items:
+            type: string
           default: []
         authors:
-          items:
-            "$ref": "#/components/schemas/Person"
           type: array
           title: Authors
+          items:
+            $ref: '#/components/schemas/Person'
           default: []
         summaries:
-          items:
-            type: string
           type: array
           title: Summaries
+          items:
+            type: string
           default: []
         translators:
-          items:
-            "$ref": "#/components/schemas/Person"
           type: array
           title: Translators
+          items:
+            $ref: '#/components/schemas/Person'
           default: []
         bookshelves:
-          items:
-            type: string
           type: array
           title: Bookshelves
-          default: []
-        languages:
           items:
             type: string
+          default: []
+        languages:
           type: array
           title: Languages
+          items:
+            type: string
           default: []
         copyright:
           anyOf:
-          - type: boolean
-          - type: 'null'
+            - type: boolean
+            - type: 'null'
           title: Copyright
         media_type:
           type: string
           title: Media Type
         formats:
-          additionalProperties:
-            type: string
           type: object
           title: Formats
+          additionalProperties:
+            type: string
           default: {}
         download_count:
           type: integer
           title: Download Count
-        is_favourite:
-          type: boolean
-          title: Is Favourite
-        became_favourite_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Became Favourite At
+
+    BookEnriched:
+      allOf:
+        - $ref: '#/components/schemas/Book'
+        - type: object
+          required:
+            - is_favourite
+            - became_favourite_at
+          properties:
+            is_favourite:
+              type: boolean
+              title: Is Favourite
+            became_favourite_at:
+              anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              title: Became Favourite At
+
+    BookID:
+      title: BookID
       type: object
       required:
-      - id
-      - title
-      - media_type
-      - download_count
-      - is_favourite
-      - became_favourite_at
-      title: BookEnriched
-    BookID:
+        - book_id
       properties:
         book_id:
           type: integer
           title: Book Id
+
+    EnrichedBooksList:
+      title: EnrichedBooksList
       type: object
       required:
-      - book_id
-      title: BookID
-    EnrichedBooksList:
+        - count
+        - results
       properties:
         count:
           type: integer
           title: Count
         next:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Next
         previous:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Previous
         results:
-          items:
-            "$ref": "#/components/schemas/BookEnriched"
           type: array
           title: Results
+          items:
+            $ref: '#/components/schemas/BookEnriched'
+
+    Error:
+      title: Error
       type: object
       required:
-      - count
-      - results
-      title: EnrichedBooksList
-    Error:
+        - code
+        - message
       properties:
         code:
           type: integer
@@ -713,58 +654,64 @@ components:
         message:
           type: string
           title: Message
+
+    FavouriteBook:
+      title: FavouriteBook
       type: object
       required:
-      - code
-      - message
-      title: Error
-    FavouriteBook:
+        - book
+        - added_at
       properties:
         book:
-          "$ref": "#/components/schemas/Book"
+          $ref: '#/components/schemas/Book'
         added_at:
           type: string
           format: date-time
           title: Added At
-      type: object
-      required:
-      - book
-      - added_at
-      title: FavouriteBook
+
     HTTPValidationError:
+      title: HTTPValidationError
+      type: object
       properties:
         detail:
-          items:
-            "$ref": "#/components/schemas/ValidationError"
           type: array
           title: Detail
-      type: object
-      title: HTTPValidationError
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
     Person:
+      title: Person
+      type: object
+      required:
+        - name
       properties:
         name:
           type: string
           title: Name
         birth_year:
           anyOf:
-          - type: integer
-          - type: 'null'
+            - type: integer
+            - type: 'null'
           title: Birth Year
         death_year:
           anyOf:
-          - type: integer
-          - type: 'null'
+            - type: integer
+            - type: 'null'
           title: Death Year
+
+    ReadingListEntry:
+      title: ReadingListEntry
       type: object
       required:
-      - name
-      title: Person
-    ReadingListEntry:
+        - status
+        - book
+        - updated_at
+        - created_at
       properties:
         status:
-          "$ref": "#/components/schemas/ReadingStatus"
+          $ref: '#/components/schemas/ReadingStatus'
         book:
-          "$ref": "#/components/schemas/Book"
+          $ref: '#/components/schemas/Book'
         updated_at:
           type: string
           format: date-time
@@ -773,42 +720,44 @@ components:
           type: string
           format: date-time
           title: Created At
+
+    ReadingListEntryCreate:
+      title: ReadingListEntryCreate
       type: object
       required:
-      - status
-      - book
-      - updated_at
-      - created_at
-      title: ReadingListEntry
-    ReadingListEntryCreate:
+        - status
+        - book_id
       properties:
         status:
-          "$ref": "#/components/schemas/ReadingStatus"
+          $ref: '#/components/schemas/ReadingStatus'
         book_id:
           type: integer
           title: Book Id
+
+    ReadingListEntryUpdate:
+      title: ReadingListEntryUpdate
       type: object
       required:
-      - status
-      - book_id
-      title: ReadingListEntryCreate
-    ReadingListEntryUpdate:
+        - status
       properties:
         status:
-          "$ref": "#/components/schemas/ReadingStatus"
-      type: object
-      required:
-      - status
-      title: ReadingListEntryUpdate
+          $ref: '#/components/schemas/ReadingStatus'
+
     ReadingStatus:
+      title: ReadingStatus
       type: string
       enum:
-      - want_to_read
-      - reading
-      - done
-      - all
-      title: ReadingStatus
+        - want_to_read
+        - reading
+        - done
+        - all
+
     Token:
+      title: Token
+      type: object
+      required:
+        - access_token
+        - token_type
       properties:
         access_token:
           type: string
@@ -816,12 +765,20 @@ components:
         token_type:
           type: string
           title: Token Type
+
+    UserCreate:
+      title: UserCreate
+      description: |
+        Schema used when creating a new user.
+
+        Inherits from UserBase and adds password validation.
+
+        Attributes:
+            password (str): Password string with minimum length enforcement.
       type: object
       required:
-      - access_token
-      - token_type
-      title: Token
-    UserCreate:
+        - login
+        - password
       properties:
         login:
           type: string
@@ -829,8 +786,8 @@ components:
           description: Unique login identifier for the user
         username:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Username
           description: Optional display name for the user
         password:
@@ -838,19 +795,17 @@ components:
           minLength: 8
           title: Password
           description: Password with at least 8 characters
-      type: object
-      required:
-      - login
-      - password
-      title: UserCreate
-      description: |-
-        Schema used when creating a new user.
 
-        Inherits from UserBase and adds password validation.
+    UserInfo:
+      title: UserInfo
+      description: |
+        Schema representing stored user information.
 
         Attributes:
-            password (str): Password string with minimum length enforcement.
-    UserInfo:
+            created_at (datetime): Timestamp of user creation.
+      type: object
+      required:
+        - login
       properties:
         login:
           type: string
@@ -858,8 +813,8 @@ components:
           description: Unique login identifier for the user
         username:
           anyOf:
-          - type: string
-          - type: 'null'
+            - type: string
+            - type: 'null'
           title: Username
           description: Optional display name for the user
         created_at:
@@ -867,41 +822,26 @@ components:
           format: date-time
           title: Created At
           description: UTC timestamp when the user was created
+
+    ValidationError:
+      title: ValidationError
       type: object
       required:
-      - login
-      title: UserInfo
-      description: |-
-        Schema representing stored user information.
-
-        Attributes:
-            created_at (datetime): Timestamp of user creation.
-    ValidationError:
+        - loc
+        - msg
+        - type
       properties:
         loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
           type: array
           title: Location
+          items:
+            anyOf:
+              - type: string
+              - type: integer
         msg:
           type: string
           title: Message
         type:
           type: string
           title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-  securitySchemes:
-    OAuth2PasswordBearer:
-      type: oauth2
-      flows:
-        password:
-          scopes: {}
-          tokenUrl: "/users/token"
 
