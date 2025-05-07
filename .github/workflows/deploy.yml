@@ -65,7 +65,7 @@ jobs:
             docker compose up -d --build
 
             echo "Waiting for services to start..."
-            sleep 10
+            sleep 15
 
             echo "Checking if service is up at localhost:8089 ..."
             if curl -s localhost:8089 >/dev/null; then
