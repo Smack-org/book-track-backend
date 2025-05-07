@@ -20,7 +20,7 @@ jobs:
           script: |
             set -e
 
-            REPO_DIR=${REPO_DIR:-"/home/${USER:-$USER}/app"}
+            REPO_DIR=${REPO_DIR:-"/home/book-track-backend"}
 
             echo "Checking dependencies..."
 
