@@ -1,11 +1,13 @@
 from typing import Optional, Dict, Any, AsyncGenerator
 import httpx
+from async_lru import alru_cache
 
 
 class GutendexClient:
     """
     A reusable async client for interacting with the
-    Gutendex API (https://gutendex.com).
+    Gutendex API (https://gutendex.com), using an async LRU cache
+    for `get_book` and `list_books` calls.
     """
 
     BASE_URL = "https://gutendex.com"
@@ -17,6 +19,25 @@ class GutendexClient:
             follow_redirects=True,
         )
 
+    @alru_cache(maxsize=128)
+    async def get_book(self, book_id: int) -> Dict[str, Any]:
+        """
+        Fetches a single book by ID from Gutendex.
+        Uses an async LRU cache to avoid repeated requests for the same book.
+        Raises HTTPStatusError on non-200 (including 404).
+        """
+        # Include trailing slash to avoid redirect
+        response = await self._client.get(f"/books/{book_id}/")
+        if response.status_code == 404:
+            raise httpx.HTTPStatusError(
+                message="Book not found",
+                request=response.request,
+                response=response,
+            )
+        response.raise_for_status()
+        return response.json()
+
+    @alru_cache(maxsize=64)
     async def list_books(
         self,
         page: int = 1,
@@ -31,8 +52,8 @@ class GutendexClient:
     ) -> Dict[str, Any]:
         """
         Fetches a paginated list of books from Gutendex with optional filters.
-        Returns the parsed JSON payload as a dict matching our
-        Pydantic schemas.
+        Uses an async LRU cache keyed on all method arguments.
+        Returns the parsed JSON payload as a dict.
         """
         params: Dict[str, Any] = {"page": page}
         if author_year_start is not None:
@@ -54,22 +75,6 @@ class GutendexClient:
 
         # Use trailing slash to avoid redirect
         response = await self._client.get("/books/", params=params)
-        response.raise_for_status()
-        return response.json()
-
-    async def get_book(self, book_id: int) -> Dict[str, Any]:
-        """
-        Fetches a single book by ID from Gutendex.
-        Raises HTTPStatusError on non-200 (including 404).
-        """
-        # Include trailing slash to avoid redirect
-        response = await self._client.get(f"/books/{book_id}/")
-        if response.status_code == 404:
-            raise httpx.HTTPStatusError(
-                message="Book not found",
-                request=response.request,
-                response=response,
-            )
         response.raise_for_status()
         return response.json()
 
