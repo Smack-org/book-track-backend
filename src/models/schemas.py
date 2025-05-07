@@ -92,3 +92,4 @@ class ListBooksParams(BaseModel):
     mime_type: Optional[str] = Query(default=None)
     search: Optional[str] = Query(default=None)
     topic: Optional[str] = Query(default=None)
+    sort: Optional[str] = Query(default=None)

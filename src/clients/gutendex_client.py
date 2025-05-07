@@ -49,6 +49,7 @@ class GutendexClient:
         mime_type: Optional[str] = None,
         search: Optional[str] = None,
         topic: Optional[str] = None,
+        sort: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Fetches a paginated list of books from Gutendex with optional filters.
@@ -72,6 +73,8 @@ class GutendexClient:
             params["search"] = search
         if topic is not None:
             params["topic"] = topic
+        if sort is not None:
+            params["sort"] = sort
 
         # Use trailing slash to avoid redirect
         response = await self._client.get("/books/", params=params)
