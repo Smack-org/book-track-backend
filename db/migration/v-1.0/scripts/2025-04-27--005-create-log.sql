@@ -4,7 +4,8 @@
 CREATE TABLE log
 (
     action  action,
-    user_id uuid
+    user_id uuid,
+    info varchar(1024)
 );
 
 ALTER TABLE log
