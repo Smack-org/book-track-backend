@@ -89,4 +89,3 @@ async def get_gutendex_client() -> AsyncGenerator[GutendexClient, None]:
         follow_redirects=True,
     ) as async_client:
         yield GutendexClient(async_client)
-

@@ -89,7 +89,6 @@ async def add_favourite(
         raise HTTPException(
             status_code=404, detail=f"Book {book.book_id} not found in Gutendex"
         )
-
     added_at = datetime.now()
     await session.execute(
         text(
