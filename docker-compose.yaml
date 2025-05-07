@@ -49,8 +49,8 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
 
   api:
     build: .
