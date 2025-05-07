@@ -9,10 +9,6 @@ on:
       - tests/**
       - Dockerfile
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   lint-test:
     runs-on: ubuntu-latest

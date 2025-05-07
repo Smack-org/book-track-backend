@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="scripts/2025-04-27--001-alter-log.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/2025-04-27--002-create-trigger-functions.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/2025-04-27--003-create-triggers.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/2025-04-27--004-alter-log.sql" relativeToChangelogFile="true"/>
+</databaseChangeLog>

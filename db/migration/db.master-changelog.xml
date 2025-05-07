@@ -8,5 +8,6 @@
        http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <include file="v-1.0/changelog-v.1.0-cumulative.xml" relativeToChangelogFile="true"/>
+    <include file="v-1.1/changelog-v.1.1-cumulative.xml" relativeToChangelogFile="true"/>
     <!-- TO FILL LATER -->
 </databaseChangeLog>
