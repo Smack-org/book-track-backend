@@ -37,6 +37,8 @@ services:
       - prometheus-data:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
