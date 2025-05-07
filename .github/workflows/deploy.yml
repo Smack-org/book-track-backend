@@ -60,7 +60,7 @@ jobs:
             echo "Starting docker-compose (rebuild images)..."
             cd "$REPO_DIR"
             
-            echo "${{ secrets.ENV_FILE }} > .env
+            echo "${{ secrets.ENV_FILE }}" > .env
 
             docker compose up -d --build
 
