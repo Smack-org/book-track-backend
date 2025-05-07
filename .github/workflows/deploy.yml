@@ -1,0 +1,74 @@
+name: Deploy to Remote Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASSWORD }}
+
+          script: |
+            set -e
+
+            REPO_DIR=${REPO_DIR:-"/home/${USER:-$USER}/app"}
+
+            echo "Checking dependencies..."
+
+            if ! command -v git >/dev/null 2>&1; then
+              echo "git not found. Installing git..."
+              sudo apt-get update && sudo apt-get install -y git
+            else
+              echo "git is already installed."
+            fi
+
+            if ! command -v docker >/dev/null 2>&1; then
+              echo "docker not found. Installing docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+              rm get-docker.sh
+            else
+              echo "docker is already installed."
+            fi
+
+            if ! command -v docker-compose >/dev/null 2>&1; then
+              echo "docker-compose not found. Installing docker-compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/download/2.14.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            else
+              echo "docker-compose is already installed."
+            fi
+
+            echo "Pulling repository..."
+            if [ ! -d "$REPO_DIR" ]; then
+              echo "Repository not found. Cloning..."
+              git clone https://github.com/${{ github.repository }}.git "$REPO_DIR"
+            else
+              echo "Repository exists. Pulling latest changes..."
+              cd "$REPO_DIR" && git pull origin main
+            fi
+
+            echo "Starting docker-compose (rebuild images)..."
+            cd "$REPO_DIR"
+
+            docker-compose up -d --build
+
+            echo "Waiting for services to start..."
+            sleep 10
+
+            echo "Checking if service is up at localhost:8089 ..."
+            if curl -s localhost:8089 >/dev/null; then
+              echo "Service is up and running!"
+            else
+              echo "ERROR: Service is not responding at localhost:8089"
+              exit 1
+            fi
