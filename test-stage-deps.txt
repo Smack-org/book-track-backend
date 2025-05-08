@@ -1,0 +1,18 @@
+# dependencies that tests need, but may not be used for the runtime
+
+fastapi
+uvicorn
+fastapi-code-generator
+python-dotenv
+prometheus-fastapi-instrumentator
+sqlalchemy
+python-jose
+passlib
+asyncpg
+python-multipart
+databases
+coverage
+gevent
+h11
+async-lru
+pytest-asyncio
