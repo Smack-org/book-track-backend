@@ -16,4 +16,4 @@ RUN poetry install --no-interaction --no-root
 
 COPY . .
 
-CMD bash -c "poetry run pytest > /logs/testlog.txt 2>&1"
+CMD bash -c "poetry run pytest ./tests > /logs/testlog.txt 2>&1"
