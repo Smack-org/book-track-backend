@@ -36,7 +36,8 @@ jobs:
           JWT_TOKEN_SECRET: 2343udh3jbdj3ybj3fbhj3fbjkfhkjf3fh3kjfn3kjfhn3kjfh3fkjhfjflfekjfekf
         run: |
           # Run unit tests
-          pytest --cov=src --cov-report=lcov ./unit-tests > unit-test.lcov
+          pytest --cov=src --cov-report=lcov ./unit-tests
+          mv coverage.lcov unit-test.lcov
 
       - name: Is there docker compose ?
         run: |
@@ -53,7 +54,9 @@ jobs:
           docker compose --file compose.test.yaml down &> /dev/null
 
           # Rename coverage path
-          cp /tmp/booktrack/lcov.info e2e-test.lcov
+          cp /tmp/booktrack/coverage.lcov e2e-test.lcov
+          # Replace base docker path to host
+          sed -i -e 's,\/app,'"$PWD"',g' e2e-test.lcov
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
