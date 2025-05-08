@@ -9,3 +9,4 @@ poetry run coverage run --concurrency greenlet --branch --source=src --data-file
 # generate the report in there, inside this container, and analyse it outside.
 poetry run coverage report --data-file=/app/coverage/.coverage > coverage/report.txt
 poetry run coverage html --directory=/app/coverage/html --data-file=/app/coverage/.coverage
+poetry run coverage lcov -o /app/coverage/lcov.info --data-file=/app/coverage/.coverage

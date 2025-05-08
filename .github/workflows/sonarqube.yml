@@ -17,6 +17,44 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon flake8 pytest pytest-cov  # linting deps
+          pip install -r test-stage-deps.txt
+
+      - name: Run unit tests
+        shell: bash
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+          JWT_TOKEN_SECRET: 2343udh3jbdj3ybj3fbhj3fbjkfhkjf3fh3kjfn3kjfhn3kjfh3fkjhfjflfekjfekf
+        run: |
+          # Run unit tests
+          pytest --cov=src --cov-report=lcov ./unit-tests > unit-test.lcov
+
+      - name: Is there docker compose ?
+        run: |
+          docker compose version || docker-compose version
+
+      - name: Run e2e tests
+        run: |
+          docker compose --file compose.test.yaml up --build -d &> /dev/null
+
+          echo "Tests are granted 15 seconds to run"
+          sleep 15
+
+          echo "Time is up! Stopping the containers..."
+          docker compose --file compose.test.yaml down &> /dev/null
+
+          # Rename coverage path
+          cp /tmp/booktrack/lcov.info e2e-test.lcov
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
