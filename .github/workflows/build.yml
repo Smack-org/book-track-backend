@@ -60,7 +60,7 @@ jobs:
       - name: Run unit tests
         shell: bash
         run: |
-          set -e
+          set -ex
 
           testlog=unit-tests-report.txt
 
