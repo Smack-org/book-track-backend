@@ -30,23 +30,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install radon flake8 pytest pytest-cov  # linting deps
-          pip install \
-            fastapi \
-            uvicorn \
-            fastapi-code-generator \
-            python-dotenv \
-            prometheus-fastapi-instrumentator \
-            sqlalchemy \
-            python-jose \
-            passlib \
-            asyncpg \
-            python-multipart \
-            databases \
-            coverage \
-            gevent \
-            h11 \
-            async-lru \
-            pytest-asyncio
+          pip install -r test-stage-deps.txt
 
       - name: Run Radon Maintainability Check
         run: |
@@ -82,8 +66,6 @@ jobs:
           POSTGRES_DB: test_db
           JWT_TOKEN_SECRET: 2343udh3jbdj3ybj3fbhj3fbjkfhkjf3fh3kjfn3kjfhn3kjfh3fkjhfjflfekjfekf
         run: |
-          set -ex
-
           testlog=unit-tests-report.txt
 
           # Run tests and store the output in a log file
