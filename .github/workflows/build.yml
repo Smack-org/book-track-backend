@@ -79,6 +79,7 @@ jobs:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
+          JWT_TOKEN_SECRET: 2343udh3jbdj3ybj3fbhj3fbjkfhkjf3fh3kjfn3kjfhn3kjfh3fkjhfjflfekjfekf
         run: |
           set -ex
 
