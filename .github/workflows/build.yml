@@ -58,6 +58,7 @@ jobs:
         run: flake8 .
 
       - name: Run unit tests
+        shell: bash
         run: |
           testlog=unit-tests-report.txt
 
