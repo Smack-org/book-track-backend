@@ -75,6 +75,10 @@ jobs:
 
       - name: Run unit tests
         shell: bash
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
         run: |
           set -ex
 
