@@ -3,7 +3,7 @@
 testlog=unit-tests-report.txt
 
 # Run tests and store the output in a log file
-PYTHONPATH=$(pwd) pytest --cov=src ./unit-tests -p no:warnings > $testlog
+pytest --cov=src ./unit-tests -p no:warnings > $testlog
 
 # Check if there are any test failures
 if grep -q "FAILED" $testlog; then
